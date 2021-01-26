@@ -625,7 +625,11 @@ pub fn pull_impl(serial_number: &SerialNumber, path: &RawPath) -> Result<Vec<u8>
 			RawStr::new("-n"),
 			RawStr::new("-T"),
 			RawStr::new("cat"),
-			RawStr::new(shell_escape::escape(Cow::Owned(path.to_string_panicky())).as_bytes()),
+			RawStr::new(
+				shell_escape::escape(Cow::Owned(path.to_string_panicky()))
+					.replace('\'', "\\'")
+					.as_bytes(),
+			),
 		]
 		.iter()
 		.copied(),

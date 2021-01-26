@@ -1,32 +1,62 @@
-# TODO_CRATE_NAME
+# adb-dump
 
-[![Lib.rs](https://img.shields.io/badge/Lib.rs-*-84f)](https://lib.rs/crates/TODO_CRATE_NAME)
-[![Crates.io](https://img.shields.io/crates/v/TODO_CRATE_NAME)](https://crates.io/crates/TODO_CRATE_NAME)
-[![Docs.rs](https://docs.rs/TODO_CRATE_NAME/badge.svg)](https://docs.rs/crates/TODO_CRATE_NAME)
+<!-- markdownlint-disable no-duplicate-heading -->
+
+[![Lib.rs](https://img.shields.io/badge/Lib.rs-*-84f)](https://lib.rs/crates/adb-dump)
+[![Crates.io](https://img.shields.io/crates/v/adb-dump)](https://crates.io/crates/adb-dump)
+[![Docs.rs](https://docs.rs/adb-dump/badge.svg)](https://docs.rs/crates/adb-dump)
 
 ![Rust 1.40.0](https://img.shields.io/static/v1?logo=Rust&label=&message=1.40.0&color=grey)
-[![CI](https://github.com/Tamschi/TODO_CRATE_NAME/workflows/CI/badge.svg?branch=develop)](https://github.com/Tamschi/TODO_CRATE_NAME/actions?query=workflow%3ACI+branch%3Adevelop)
-![Crates.io - License](https://img.shields.io/crates/l/TODO_CRATE_NAME/0.0.1)
+[![CI](https://github.com/Tamschi/adb-dump/workflows/CI/badge.svg?branch=develop)](https://github.com/Tamschi/adb-dump/actions?query=workflow%3ACI+branch%3Adevelop)
+![Crates.io - License](https://img.shields.io/crates/l/adb-dump/0.0.1)
 
-[![GitHub](https://img.shields.io/static/v1?logo=GitHub&label=&message=%20&color=grey)](https://github.com/Tamschi/TODO_CRATE_NAME)
-[![open issues](https://img.shields.io/github/issues-raw/Tamschi/TODO_CRATE_NAME)](https://github.com/Tamschi/TODO_CRATE_NAME/issues)
-[![open pull requests](https://img.shields.io/github/issues-pr-raw/Tamschi/TODO_CRATE_NAME)](https://github.com/Tamschi/TODO_CRATE_NAME/pulls)
-[![crev reviews](https://web.crev.dev/rust-reviews/badge/crev_count/TODO_CRATE_NAME.svg)](https://web.crev.dev/rust-reviews/crate/TODO_CRATE_NAME/)
+[![GitHub](https://img.shields.io/static/v1?logo=GitHub&label=&message=%20&color=grey)](https://github.com/Tamschi/adb-dump)
+[![open issues](https://img.shields.io/github/issues-raw/Tamschi/adb-dump)](https://github.com/Tamschi/adb-dump/issues)
+[![open pull requests](https://img.shields.io/github/issues-pr-raw/Tamschi/adb-dump)](https://github.com/Tamschi/adb-dump/pulls)
+[![crev reviews](https://web.crev.dev/rust-reviews/badge/crev_count/adb-dump.svg)](https://web.crev.dev/rust-reviews/crate/adb-dump/)
 
-TODO_README_DESCRIPTION
+A LineageOS update soft-bricked my phone, and I could not find any good data-dump software. This tries(!) to pull everything it can as accurately as it can into a TAR file.
+
+Developed mainly against TWRP sitting in its main menu.
 
 ## Installation
+
+### bin
+
+```cmd
+cargo install adb-dump
+```
+
+### lib
 
 Please use [cargo-edit](https://crates.io/crates/cargo-edit) to always add the latest version of this library:
 
 ```cmd
-cargo add TODO_CRATE_NAME
+cargo add adb-dump
 ```
 
 ## Example
 
+### bin
+
+```cmd
+REM Dump as much data as is accessible, split into one TAR file per root subdirectory + one for files in the root subdirectory (as adb-dump_root).
+
+REM Root subdirectories are present in the archives.
+
+adb-dump --split /
+```
+
+### lib
+
 ```rust
-TODO_EXAMPLE
+// TODO_EXAMPLE
+```
+
+## CLI
+
+```text
+TODO
 ```
 
 ## License
@@ -52,7 +82,7 @@ dual licensed as above, without any additional terms or conditions.
 
 ## Versioning
 
-`TODO_CRATE_NAME` strictly follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) with the following exceptions:
+`adb-dump` strictly follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) with the following exceptions:
 
 * The minor version will not reset to 0 on major version changes (except for v1).  
 Consider it the global feature level.

@@ -1,9 +1,9 @@
-# TODO_CRATE_NAME Changelog
+# adb-dump Changelog
 
 <!-- markdownlint-disable no-trailing-punctuation -->
 
 ## 0.0.1
 
-TODO_YEAR-TODO_MONTH-TODO_DAY
+2021-01-TODO_DAY
 
 Initial unstable release

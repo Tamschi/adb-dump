@@ -262,13 +262,13 @@ impl Debug for SerialNumber {
 }
 
 #[derive(Debug)]
-struct AnError(&'static str);
-impl Display for AnError {
+struct AnError<T: Debug + Display>(T);
+impl<T: Debug + Display> Display for AnError<T> {
 	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-		Display::fmt(self.0, f)
+		Display::fmt(&self.0, f)
 	}
 }
-impl std::error::Error for AnError {}
+impl<T: Debug + Display> std::error::Error for AnError<T> {}
 
 pub fn get_serialno() -> Result<SerialNumber, Error> {
 	Ok(SerialNumber(
@@ -611,31 +611,36 @@ impl Debug for RawString {
 pub fn pull(
 	serial_number: &SerialNumber,
 	path: &(impl AsRef<RawPath> + ?Sized),
+	expected_size: u32,
 ) -> Result<Vec<u8>, Error> {
-	pull_impl(serial_number, path.as_ref())
+	pull_impl(serial_number, path.as_ref(), expected_size)
 }
 
-pub fn pull_impl(serial_number: &SerialNumber, path: &RawPath) -> Result<Vec<u8>, Error> {
-	let _it_works = scrape(
-		"adb",
-		[
-			RawStr::new("-s"),
-			serial_number,
-			RawStr::new("shell"),
-			RawStr::new("-n"),
-			RawStr::new("-T"),
-			RawStr::new("cat"),
-			RawStr::new(
-				shell_escape::escape(Cow::Owned(path.to_string_panicky()))
-					.replace('\'', "\\'")
-					.as_bytes(),
-			),
-		]
-		.iter()
-		.copied(),
-	)?;
+pub fn pull_impl(
+	serial_number: &SerialNumber,
+	path: &RawPath,
+	expected_size: u32,
+) -> Result<Vec<u8>, Error> {
+	// let _it_works = scrape(
+	// 	"adb",
+	// 	[
+	// 		RawStr::new("-s"),
+	// 		serial_number,
+	// 		RawStr::new("shell"),
+	// 		RawStr::new("-n"),
+	// 		RawStr::new("-T"),
+	// 		RawStr::new("cat"),
+	// 		RawStr::new(
+	// 			shell_escape::escape(Cow::Owned(path.to_string_panicky()))
+	// 				.replace('\'', "\\'")
+	// 				.as_bytes(),
+	// 		),
+	// 	]
+	// 	.iter()
+	// 	.copied(),
+	// )?;
 
-	scrape(
+	let file = scrape(
 		"adb",
 		[
 			RawStr::new("-s"),
@@ -647,5 +652,19 @@ pub fn pull_impl(serial_number: &SerialNumber, path: &RawPath) -> Result<Vec<u8>
 		]
 		.iter()
 		.copied(),
-	)
+	)?;
+
+	if file.len() == usize::try_from(expected_size).unwrap() {
+		Ok(file)
+	} else {
+		Err(Error::new(
+			ErrorKind::InvalidData,
+			AnError(format!(
+				"Error pulling {:?}: Exprected {} bytes, got {}",
+				path,
+				expected_size,
+				file.len()
+			)),
+		))
+	}
 }

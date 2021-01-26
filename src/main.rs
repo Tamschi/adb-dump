@@ -25,7 +25,6 @@ fn main() -> Result<(), Error> {
 }
 
 fn convert_date_time(date_time: &NaiveDateTime) -> DateTime {
-	dbg!(date_time);
 	let time = date_time.time();
 	DateTime::from_date_and_time(
 		u16::try_from(date_time.year()).unwrap(),
@@ -106,9 +105,7 @@ fn visit_file<W: Write + Seek>(
 			.last_modified_time(convert_date_time(&entry.epoch.to_date_time()))
 			.unix_permissions(entry.mode.permissions()),
 	)?;
-	let data = adb_dump::pull(serial_number, path)?;
-	assert_eq!(data.len(), usize::try_from(entry.size).unwrap());
-	zip.write_all(&data)?;
+	zip.write_all(&adb_dump::pull(serial_number, path, entry.size)?)?;
 	zip.flush()?;
 	Ok(())
 }

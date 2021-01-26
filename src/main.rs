@@ -15,7 +15,11 @@ fn main() -> Result<(), Error> {
 	let arg_path: &RawPath = "/data".into();
 	let prefix = arg_path.directory().unwrap();
 
-	let mut zip = ZipWriter::new(File::create("backup.zip")?);
+	let file = std::fs::OpenOptions::new()
+		.create_new(true)
+		.write(true)
+		.open("backup.zip")?;
+	let mut zip = ZipWriter::new(file);
 
 	visit_dir(&mut zip, &s_no, prefix, arg_path)?;
 

@@ -102,11 +102,13 @@ fn visit_file<W: Write + Seek>(
 	zip.start_file(
 		path.without_prefix(archive_root).to_string_panicky(),
 		FileOptions::default()
-			.compression_method(CompressionMethod::Stored)
+			.compression_method(CompressionMethod::DEFLATE)
 			.last_modified_time(convert_date_time(&entry.epoch.to_date_time()))
 			.unix_permissions(entry.mode.permissions()),
 	)?;
-	zip.write_all(&adb_dump::pull(serial_number, path)?)?;
+	let data = adb_dump::pull(serial_number, path)?;
+	assert_eq!(data.len(), usize::try_from(entry.size).unwrap());
+	zip.write_all(&data)?;
 	zip.flush()?;
 	Ok(())
 }

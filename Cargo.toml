@@ -39,5 +39,10 @@ git_info = "0.1.2"
 version-sync = "0.9.1"
 
 [dependencies]
+chrono = "0.4.19"
+enumflags2 = "0.6.4"
 hex = "0.4.2"
+shell-escape = "0.1.5"
+time = { version = "0.2.25" }
 unix_mode = "0.1.1"
+zip = "0.5.9"

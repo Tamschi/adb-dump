@@ -37,3 +37,7 @@ cargo-husky = "1.5.0"
 doc-comment = "0.3.3"
 git_info = "0.1.2"
 version-sync = "0.9.1"
+
+[dependencies]
+hex = "0.4.2"
+unix_mode = "0.1.1"

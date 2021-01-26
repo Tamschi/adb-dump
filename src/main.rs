@@ -2,8 +2,8 @@
 
 use adb_dump::{LsEntry, ModeKind, RawPath, SerialNumber};
 use chrono::{Datelike, NaiveDateTime, Timelike};
-use std::convert::TryFrom;
 use std::{
+	convert::TryFrom,
 	fs::File,
 	io::{Error, Seek, Write},
 };

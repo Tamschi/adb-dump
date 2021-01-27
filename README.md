@@ -19,6 +19,12 @@ A LineageOS update soft-bricked my phone, and I could not find any good data-dum
 
 Developed mainly against TWRP sitting in its main menu.
 
+## Warning
+
+**Always validate your backups after making them!**
+
+This software comes without any warranties regarding data integrity whatsoever (see licenses for more information), and some of the libraries it depends on are not as reliable as they should be. I tried to work around this, but I can't say with certainty that there aren't any silent errors left.
+
 ## Installation
 
 ### bin

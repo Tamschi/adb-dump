@@ -12,7 +12,7 @@ use std::{
 	fmt::{Debug, Display, Formatter},
 	io::{Error, ErrorKind},
 	iter,
-	ops::{Add, Deref, Index, Range, RangeFrom, RangeInclusive, RangeTo},
+	ops::{Add, AddAssign, Deref, Index, Range, RangeFrom, RangeInclusive, RangeTo},
 	path::PathBuf,
 	process::{Command, Output},
 	time::{Duration, SystemTime, UNIX_EPOCH},
@@ -333,15 +333,50 @@ pub fn ls_impl(
 	serial_number: &SerialNumber,
 	path: &RawPath,
 ) -> Result<impl Iterator<Item = LsEntry>, Error> {
+	#![allow(clippy::items_after_statements)]
+
 	let ls_out = RawString(scrape(
 		"adb",
 		[RawStr::new("-s"), serial_number, RawStr::new("ls"), path]
 			.iter()
 			.copied(),
 	)?);
-	let lines = ls_out
-		.lines()
-		.map(|mut l| {
+
+	let mut lines = Vec::new();
+	fn contains_another_hex_field(line: &mut &RawStr) -> bool {
+		line.split_take(b' ').map(|slice| {
+			slice.len() == 8
+				&& slice
+					.iter()
+					.all(|b| (b'0'..=b'9').contains(b) || (b'a'..=b'f').contains(b))
+		}) == Some(true)
+	};
+	for line in ls_out.lines() {
+		let mut l = line;
+		if contains_another_hex_field(&mut l)
+			&& contains_another_hex_field(&mut l)
+			&& contains_another_hex_field(&mut l)
+		{
+			// This is *probably* the start of a new line.
+			lines.push(line.to_owned())
+		} else if let Some(previous) = lines.last_mut() {
+			previous.0.push(b'\n');
+			*previous += line;
+		} else {
+			return Err(Error::new(
+				ErrorKind::InvalidData,
+				AnError(format!(
+					"Could not make sense of `adb ls` output for path {:?}",
+					path
+				)),
+			));
+		}
+	}
+
+	let entries = lines
+		.into_iter()
+		.map(|l| {
+			let mut l = l.as_str();
 			Result::<_, Error>::Ok(LsEntry {
 				mode: UnixMode(
 					l.split_take(b' ')
@@ -366,7 +401,13 @@ pub fn ls_impl(
 		})
 		.collect::<Result<Vec<_>, _>>()?;
 
-	Ok(lines.into_iter())
+	Ok(entries.into_iter())
+}
+
+impl AddAssign<&RawStr> for RawString {
+	fn add_assign(&mut self, rhs: &RawStr) {
+		self.0.extend(rhs.iter())
+	}
 }
 
 impl TryFrom<&RawStr> for u32 {
@@ -382,7 +423,7 @@ impl TryFrom<&RawStr> for u32 {
 				.map_err(|err| {
 					Error::new(
 						ErrorKind::InvalidData,
-						AnError("Wrong number of bytes in hex u32"),
+						AnError(format!("Wrong number of bytes in hex u32: {:?}", err)),
 					)
 				})?,
 		))

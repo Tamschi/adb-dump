@@ -150,7 +150,7 @@ fn visit_file(
 	zip.start_file(
 		path.without_prefix(archive_root).to_string_panicky(),
 		FileOptions::default()
-			.compression_method(CompressionMethod::DEFLATE)
+			.compression_method(CompressionMethod::STORE)
 			.last_modified_time(convert_date_time(&entry.epoch.to_date_time()))
 			.unix_permissions(entry.mode.permissions()),
 	)?;

@@ -144,7 +144,6 @@ fn visit_file(
 		*cumulative_file_size = file.len();
 
 		zip.finish()?;
-		zip.flush()?;
 		*zip = start_zip(zip_count)?;
 	}
 

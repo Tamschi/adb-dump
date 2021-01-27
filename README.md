@@ -6,7 +6,7 @@
 [![Crates.io](https://img.shields.io/crates/v/adb-dump)](https://crates.io/crates/adb-dump)
 [![Docs.rs](https://docs.rs/adb-dump/badge.svg)](https://docs.rs/crates/adb-dump)
 
-![Rust 1.40.0](https://img.shields.io/static/v1?logo=Rust&label=&message=1.40.0&color=grey)
+![Rust 1.49.0](https://img.shields.io/static/v1?logo=Rust&label=&message=1.49.0&color=grey)
 [![CI](https://github.com/Tamschi/adb-dump/workflows/CI/badge.svg?branch=develop)](https://github.com/Tamschi/adb-dump/actions?query=workflow%3ACI+branch%3Adevelop)
 ![Crates.io - License](https://img.shields.io/crates/l/adb-dump/0.0.1)
 

@@ -15,7 +15,7 @@
 [![open pull requests](https://img.shields.io/github/issues-pr-raw/Tamschi/adb-dump)](https://github.com/Tamschi/adb-dump/pulls)
 [![crev reviews](https://web.crev.dev/rust-reviews/badge/crev_count/adb-dump.svg)](https://web.crev.dev/rust-reviews/crate/adb-dump/)
 
-A LineageOS update soft-bricked my phone, and I could not find any good data-dump software. This tries(!) to pull everything it can as accurately as it can into a TAR file.
+A LineageOS update soft-bricked my phone, and I could not find any good data-dump software. This tries(!) to pull everything it can as accurately as it can into reasonably-sized ZIP files.
 
 Developed mainly against TWRP sitting in its main menu.
 
@@ -24,6 +24,8 @@ Developed mainly against TWRP sitting in its main menu.
 **Always validate your backups after making them!**
 
 This software comes without any warranties regarding data integrity whatsoever (see licenses for more information), and some of the libraries it depends on are not as reliable as they should be. I tried to work around this, but I can't say with certainty that there aren't any silent errors left.
+
+(If you know a good *reliable* archive library then please tell me about it!)
 
 ## Installation
 

@@ -53,6 +53,19 @@ fn visit_dir<W: Write + Seek>(
 ) -> Result<(), Error> {
 	println!("dir {:?}", &path);
 
+	let ignore = &[
+		"/BrowserMetrics",
+		"/HTTP Cache",
+		"/com.google.android.googlequicksearchbox",
+		"/.com.google.firebase.crashlytics-ndk",
+	];
+	for ignore in ignore {
+		if path.to_string_panicky().ends_with(ignore) {
+			eprint!("IGNORED directory");
+			return Ok(());
+		}
+	}
+
 	for entry in adb_dump::ls(serial_number, path)? {
 		match entry.mode.kind() {
 			dir if dir == ModeKind::Dir => {

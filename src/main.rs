@@ -21,7 +21,7 @@ fn start_zip(zip_count: &mut usize) -> Result<ZipWriter<File>, Error> {
 fn main() -> Result<(), Error> {
 	let s_no = dbg!(adb_dump::get_serialno())?;
 
-	let arg_path: &RawPath = "/data/data/taxi.android.client/cache/images".into();
+	let arg_path: &RawPath = "/data".into();
 	let prefix = arg_path.directory().unwrap();
 
 	let mut zip_count = 0;

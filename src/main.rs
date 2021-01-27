@@ -5,23 +5,37 @@ use chrono::{Datelike, NaiveDateTime, Timelike};
 use std::{
 	convert::TryFrom,
 	fs::File,
-	io::{Error, Seek, Write},
+	io::{Error, Write},
 };
 use zip::{write::FileOptions, CompressionMethod, DateTime, ZipWriter};
+
+fn start_zip(zip_count: &mut usize) -> Result<ZipWriter<File>, Error> {
+	*zip_count += 1;
+	let file = std::fs::OpenOptions::new()
+		.create_new(true)
+		.write(true)
+		.open(&format!("backup.{}.zip", zip_count))?;
+	Ok(ZipWriter::new(file))
+}
 
 fn main() -> Result<(), Error> {
 	let s_no = dbg!(adb_dump::get_serialno())?;
 
-	let arg_path: &RawPath = "/data".into();
+	let arg_path: &RawPath = "/data/data/taxi.android.client/cache/images".into();
 	let prefix = arg_path.directory().unwrap();
 
-	let file = std::fs::OpenOptions::new()
-		.create_new(true)
-		.write(true)
-		.open("backup.zip")?;
-	let mut zip = ZipWriter::new(file);
+	let mut zip_count = 0;
+	let mut cumulative_file_size = 0;
+	let mut zip = start_zip(&mut zip_count)?;
 
-	visit_dir(&mut zip, &s_no, prefix, arg_path)?;
+	visit_dir(
+		&mut zip,
+		&mut zip_count,
+		&mut cumulative_file_size,
+		&s_no,
+		prefix,
+		arg_path,
+	)?;
 
 	zip.finish()?;
 
@@ -45,8 +59,10 @@ fn convert_date_time(date_time: &NaiveDateTime) -> DateTime {
 	})
 }
 
-fn visit_dir<W: Write + Seek>(
-	zip: &mut ZipWriter<W>,
+fn visit_dir(
+	zip: &mut ZipWriter<File>,
+	zip_count: &mut usize,
+	cumulative_file_size: &mut usize,
 	serial_number: &SerialNumber,
 	archive_root: &RawPath,
 	path: &RawPath,
@@ -83,6 +99,8 @@ fn visit_dir<W: Write + Seek>(
 					//TODO: Add dir!
 					visit_dir(
 						zip,
+						zip_count,
+						cumulative_file_size,
 						serial_number,
 						archive_root,
 						&path.join(entry.name.as_str()),
@@ -91,6 +109,8 @@ fn visit_dir<W: Write + Seek>(
 			}
 			file if file == ModeKind::File => visit_file(
 				zip,
+				zip_count,
+				cumulative_file_size,
 				serial_number,
 				archive_root,
 				&path.join(entry.name.as_str()),
@@ -106,14 +126,27 @@ fn visit_dir<W: Write + Seek>(
 	Ok(())
 }
 
-fn visit_file<W: Write + Seek>(
-	zip: &mut ZipWriter<W>,
+fn visit_file(
+	zip: &mut ZipWriter<File>,
+	zip_count: &mut usize,
+	cumulative_file_size: &mut usize,
 	serial_number: &SerialNumber,
 	archive_root: &RawPath,
 	path: &RawPath,
 	entry: &LsEntry,
 ) -> Result<(), Error> {
 	println!("file {:?}", &path);
+
+	let file = adb_dump::pull(serial_number, path, entry.size)?;
+
+	*cumulative_file_size += file.len();
+	if *cumulative_file_size > 1_000_000_000 {
+		*cumulative_file_size = file.len();
+
+		zip.finish()?;
+		zip.flush()?;
+		*zip = start_zip(zip_count)?;
+	}
 
 	zip.start_file(
 		path.without_prefix(archive_root).to_string_panicky(),
@@ -122,7 +155,7 @@ fn visit_file<W: Write + Seek>(
 			.last_modified_time(convert_date_time(&entry.epoch.to_date_time()))
 			.unix_permissions(entry.mode.permissions()),
 	)?;
-	zip.write_all(&adb_dump::pull(serial_number, path, entry.size)?)?;
+	zip.write_all(&file)?;
 	zip.flush()?;
 	Ok(())
 }

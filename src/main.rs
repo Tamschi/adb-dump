@@ -70,14 +70,29 @@ fn visit_dir(
 	println!("dir {:?}", &path);
 
 	let ignore = &[
-		"/BrowserMetrics",
+		"/BrowserMetrics", // LineageOS used to generate a very large (unbounded) amount of these files via web embed, and they're quite large too.
 		"/HTTP Cache",
-		"/com.google.android.googlequicksearchbox",
-		"/.com.google.firebase.crashlytics-ndk",
+		"/com.google.android.googlequicksearchbox", // This caches A LOT of data and you probably don't want to keep it.
+		"/.com.google.firebase.crashlytics-ndk",    // Twitter creates a huge amount of crash reports :(
+		"/org.mozilla.firefox/cache",               // It's just a ton of pretty useless files.
+		"/com.crashlytics.sdk.android.crashlytics-core", // Notify crashes a lot.
+		"/lib/python2.7",                           // Ren'Py uses this.
+		"/cache/image_manager_disk_cache", // Various programs use this, so while it's usually not huge, there might be a lot cumulatively.
+		"/cache:memrise.offline.assets",   // Many files, and quite possibly large.
+		"/org.mozilla.firefox_beta/cache",
+		"/com.ecosia.android/cache",            // Another browser cache.
+		"/com.duckduckgo.mobile.android/cache", // Quack.
+		"/org.mozilla.fenix/cache",             // Firefox Nightly
 	];
 	for ignore in ignore {
 		if path.to_string_panicky().ends_with(ignore) {
-			eprint!("IGNORED directory");
+			zip.start_file(
+				path.without_prefix(archive_root)
+					.join("IGNORED")
+					.to_string_panicky(),
+				FileOptions::default(),
+			)?;
+			eprintln!("IGNORED");
 			return Ok(());
 		}
 	}

@@ -272,8 +272,7 @@ impl<T: Debug + Display> std::error::Error for AnError<T> {}
 
 pub fn get_serialno() -> Result<SerialNumber, Error> {
 	Ok(SerialNumber(
-		single_line(RawStr::new(&scrape(
-			"adb",
+		single_line(RawStr::new(&scrape_adb(
 			[RawStr::new("get-serialno")].iter().copied(),
 		)?))?
 		.to_owned(),
@@ -335,8 +334,7 @@ pub fn ls_impl(
 ) -> Result<impl Iterator<Item = LsEntry>, Error> {
 	#![allow(clippy::items_after_statements)]
 
-	let ls_out = RawString(scrape(
-		"adb",
+	let ls_out = RawString(scrape_adb(
 		[RawStr::new("-s"), serial_number, RawStr::new("ls"), path]
 			.iter()
 			.copied(),
@@ -438,10 +436,7 @@ impl Deref for RawStr {
 	}
 }
 
-fn scrape<'a>(
-	command: &(impl AsRef<OsStr> + ?Sized),
-	args: impl IntoIterator<Item = &'a RawStr>,
-) -> Result<Vec<u8>, Error> {
+fn scrape_adb<'a>(args: impl IntoIterator<Item = &'a RawStr>) -> Result<Vec<u8>, Error> {
 	let args = args
 		.into_iter()
 		.map(OsString::try_from)
@@ -681,8 +676,7 @@ pub fn pull_impl(
 	// 	.copied(),
 	// )?;
 
-	let file = scrape(
-		"adb",
+	let file = scrape_adb(
 		[
 			RawStr::new("-s"),
 			serial_number,

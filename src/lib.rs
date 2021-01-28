@@ -545,7 +545,10 @@ impl RawStr {
 		self.0.len()
 	}
 
-	pub fn as_dbg(&self) -> impl Debug + Sized + '_ {}
+	#[must_use]
+	pub fn as_dbg(&self) -> impl Debug + Sized + '_ {
+		self
+	}
 }
 impl Debug for RawStr {
 	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

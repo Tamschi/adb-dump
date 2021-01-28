@@ -40,7 +40,6 @@ version-sync = "0.9.1"
 
 [dependencies]
 chrono = "0.4.19"
-crc32fast = { version = "1.1.1", default-features = false } # -Z minimal-versions workaround
 enumflags2 = "0.6.4"
 hex = "0.4.2"
 shell-escape = "0.1.5"

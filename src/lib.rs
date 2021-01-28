@@ -6,16 +6,13 @@ use chrono::NaiveDateTime;
 use enumflags2::BitFlags;
 use std::{
 	any::type_name,
-	borrow::{Borrow, Cow},
+	borrow::Borrow,
 	convert::{TryFrom, TryInto},
-	ffi::{OsStr, OsString},
+	ffi::OsString,
 	fmt::{Debug, Display, Formatter},
 	io::{Error, ErrorKind},
-	iter,
-	ops::{Add, AddAssign, Deref, Index, Range, RangeFrom, RangeInclusive, RangeTo},
-	path::PathBuf,
+	ops::{AddAssign, Deref, Index, Range, RangeFrom, RangeInclusive, RangeTo},
 	process::{Command, Output},
-	time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
 #[cfg(doctest)]
@@ -48,6 +45,7 @@ pub enum ModeKind {
 
 pub struct UnixMode(u32);
 impl UnixMode {
+	#[must_use]
 	pub fn new(value: u32) -> Self {
 		Self(value)
 	}
@@ -192,6 +190,7 @@ where
 }
 
 impl RawString {
+	#[must_use]
 	pub fn as_str(&self) -> &RawStr {
 		RawStr::new(&self.0)
 	}
@@ -208,6 +207,7 @@ impl RawPath {
 		self.join_impl(other.into())
 	}
 
+	#[must_use]
 	pub fn join_impl(&self, other: &RawPath) -> RawPathBuf {
 		let mut slash = 1;
 		if self.ends_with(&[b'/']) {
@@ -290,7 +290,7 @@ fn single_line(str: &RawStr) -> Result<&RawStr, Error> {
 			AnError("Unexpected extra line found"),
 		));
 	}
-	if line.len() == 0 {
+	if line.is_empty() {
 		return Err(Error::new(
 			ErrorKind::InvalidData,
 			"No serial number found in output",
@@ -348,7 +348,7 @@ pub fn ls_impl(
 					.iter()
 					.all(|b| (b'0'..=b'9').contains(b) || (b'a'..=b'f').contains(b))
 		}) == Some(true)
-	};
+	}
 	for line in ls_out.lines() {
 		let mut l = line;
 		if contains_another_hex_field(&mut l)
@@ -541,6 +541,7 @@ impl RawStr {
 		unsafe { &*ptr }
 	}
 
+	#[must_use]
 	pub fn len(&self) -> usize {
 		self.0.len()
 	}
@@ -548,6 +549,11 @@ impl RawStr {
 	#[must_use]
 	pub fn as_dbg(&self) -> impl Debug + Sized + '_ {
 		self
+	}
+
+	#[must_use]
+	pub fn is_empty(&self) -> bool {
+		self.0.is_empty()
 	}
 }
 impl Debug for RawStr {

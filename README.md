@@ -15,7 +15,7 @@
 [![open pull requests](https://img.shields.io/github/issues-pr-raw/Tamschi/adb-dump)](https://github.com/Tamschi/adb-dump/pulls)
 [![crev reviews](https://web.crev.dev/rust-reviews/badge/crev_count/adb-dump.svg)](https://web.crev.dev/rust-reviews/crate/adb-dump/)
 
-A LineageOS update soft-bricked my phone, and I could not find any good data-dump software. This tries(!) to pull everything it can as accurately as it can into reasonably-sized ZIP files.
+A LineageOS update soft-bricked my phone, and I could not find any good data-dump software. This tries(!) to pull )(almost) everything it can as accurately as it can into reasonably-sized ZIP files. **Note that certain cache (sub)folders are ignored by default!**
 
 Developed mainly against TWRP sitting in its main menu.
 

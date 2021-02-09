@@ -83,7 +83,7 @@ fn visit_dir(
 		"/com.ecosia.android/cache",            // Another browser cache.
 		"/com.duckduckgo.mobile.android/cache", // Quack.
 		"/org.mozilla.fenix/cache",             // Firefox Nightly
-		"/data/data/com.google.android.apps.photos/cache/glide_cache", // Google Photos thumbnail cache, probably. It can take ages to back this up.
+		"/com.google.android.apps.photos/cache/glide_cache", // Google Photos thumbnail cache, probably. It can take ages to back this up.
 	];
 	for ignore in ignore {
 		if path.to_string_panicky().ends_with(ignore) {

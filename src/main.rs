@@ -89,6 +89,7 @@ fn visit_dir(
 		"/com.google.android.inputmethod.latin/cache",       // GBoard cache, probably
 		"/com.discord/cache",                                // Discord cache
 		"/de.nebenan.app/cache",                             // Nebenan.de cache
+		"/data/crdroid_updates", // Huge system image files that you probably don't need.
 	];
 	for ignore in ignore {
 		if path.to_string_panicky().ends_with(ignore) {

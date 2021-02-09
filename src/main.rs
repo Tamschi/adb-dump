@@ -84,6 +84,11 @@ fn visit_dir(
 		"/com.duckduckgo.mobile.android/cache", // Quack.
 		"/org.mozilla.fenix/cache",             // Firefox Nightly
 		"/com.google.android.apps.photos/cache/glide_cache", // Google Photos thumbnail cache, probably. It can take ages to back this up.
+		"/com.twitter.android/cache",                        // Twitter cache
+		"/org.telegram.messenger/cache",                     // Telegram cache
+		"/com.google.android.inputmethod.latin/cache",       // GBoard cache, probably
+		"/com.discord/cache",                                // Discord cache
+		"/de.nebenan.app/cache",                             // Nebenan.de cache
 	];
 	for ignore in ignore {
 		if path.to_string_panicky().ends_with(ignore) {

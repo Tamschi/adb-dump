@@ -45,7 +45,7 @@ enumflags2 = "0.6.4"
 hex = "0.4.2"
 shell-escape = "0.1.5"
 unix_mode = "0.1.1"
-zip = { version = "0.5.9", default-features = false }
+zip = { version = "0.6.2", default-features = false }
 
 [build-dependencies]
 thiserror = { version = "1.0.7", default-features = false } # -Z minimal-versions workaround (zip)
